@@ -14,7 +14,7 @@ class TestTumblrAPI(unittest.TestCase):
         self.settings.BLOG_IDENTIFIER = "your_blog_identifier"
     @patch('builtins.input', side_effect=['Test Title','Test Body'])
     @patch('requests.post')
-    def test_create_post_success(self, mock_post):
+    def test_create_post_success(self, mock_post,mock_input):
         """Tests the successful creation of a post."""
         mock_response = MagicMock()
         mock_response.status_code = 201
@@ -23,13 +23,13 @@ class TestTumblrAPI(unittest.TestCase):
             "response": {"id": 12345, "state": "published"}
         }
         mock_post.return_value = mock_response
-        result= self.tumblr.create_post()
+        result,post_data= self.tumblr.create_post()
         self.assertIsNotNone(result)
         self.assertIn("id", result['response'])
         self.assertEqual(result['meta']['status'], 201)
     @patch('builtins.input', side_effect=['12345'])
     @patch('requests.post')
-    def test_delete_post_success(self, mock_post):
+    def test_delete_post_success(self, mock_post,mock_input):
         """Tests the successful deletion of a post."""
         mock_response = MagicMock()
         mock_response.status_code = 204  # Assuming Tumblr returns 204 for successful deletion
@@ -41,7 +41,7 @@ class TestTumblrAPI(unittest.TestCase):
 
     @patch('builtins.input', side_effect=['tag1'])
     @patch('requests.get')
-    def test_search_posts_success(self, mock_get):
+    def test_search_posts_success(self, mock_get,mock_input):
         """Tests the successful search of a post."""
         mock_response = MagicMock()
         mock_response.status_code = 200
